@@ -1,0 +1,15 @@
+services:
+  # This service runs your SearXNG backend
+  - type: web
+    name: nova-search-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile  # Points to the Dockerfile in the root
+    plan: free
+    
+  # This service runs your browser frontend
+  - type: web
+    name: nova-web-frontend
+    runtime: node # Or whatever you are using for your browser code
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    plan: free
