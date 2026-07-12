@@ -1,20 +1,56 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NovaSearch</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Nova Search</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="search-container">
-        <h1 class="logo">NovaSearch</h1>
-        <div class="search-box">
-            <input type="text" id="search-input" placeholder="Search the web..." autofocus>
-            <button id="search-button">Search</button>
+<body class="bg-gray-50 h-screen flex flex-col items-center justify-center p-4">
+
+    <div class="w-full max-w-2xl text-center">
+        <h1 class="text-4xl font-extrabold text-gray-900 mb-8">Nova Search</h1>
+        
+        <div class="relative">
+            <input type="text" id="searchInput" 
+                class="w-full p-4 pl-6 text-lg border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                placeholder="Search anything...">
+            <button onclick="handleSearch()" 
+                class="absolute right-2 top-2 bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition">
+                Search
+            </button>
         </div>
-        <div id="results-container"></div>
+
+        <div id="results" class="mt-8 space-y-4 text-left w-full">
+            </div>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        async function handleSearch() {
+            const query = document.getElementById('searchInput').value;
+            const resultsDiv = document.getElementById('results');
+            
+            resultsDiv.innerHTML = '<p class="text-gray-500 text-center">Searching...</p>';
+
+            try {
+                const response = await fetch(`https://YOUR_RENDER_URL.onrender.com/search?q=${query}&format=json`);
+                const data = await response.json();
+                
+                resultsDiv.innerHTML = ''; // Clear loading text
+                
+                data.results.forEach(result => {
+                    resultsDiv.innerHTML += `
+                        <div class="p-4 bg-white rounded-lg shadow-sm border border-gray-200">
+                            <a href="${result.url}" class="text-blue-600 font-semibold text-lg hover:underline">${result.title}</a>
+                            <p class="text-gray-600 text-sm mt-1">${result.content}</p>
+                        </div>
+                    `;
+                });
+            } catch (err) {
+                resultsDiv.innerHTML = '<p class="text-red-500 text-center">Error: Could not reach search backend.</p>';
+            }
+        }
+    </script>
 </body>
 </html>
