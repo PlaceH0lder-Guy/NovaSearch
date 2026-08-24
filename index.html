@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -34,15 +33,21 @@
             resultsDiv.innerHTML = '<p class="text-gray-500 text-center">Searching...</p>';
 
             try {
-                const response = await fetch(`https://YOUR_RENDER_URL.onrender.com/search?q=${query}&format=json`);
+                // Pointing directly to your Back4app container backend
+                const response = await fetch(`https://novaweb-m6qy06px.b4a.run/search?q=${encodeURIComponent(query)}&format=json`);
                 const data = await response.json();
                 
                 resultsDiv.innerHTML = ''; // Clear loading text
                 
+                if (!data.results || data.results.length === 0) {
+                    resultsDiv.innerHTML = '<p class="text-gray-500 text-center">No results found.</p>';
+                    return;
+                }
+
                 data.results.forEach(result => {
                     resultsDiv.innerHTML += `
                         <div class="p-4 bg-white rounded-lg shadow-sm border border-gray-200">
-                            <a href="${result.url}" class="text-blue-600 font-semibold text-lg hover:underline">${result.title}</a>
+                            <a href="${result.url}" target="_blank" class="text-blue-600 font-semibold text-lg hover:underline">${result.title}</a>
                             <p class="text-gray-600 text-sm mt-1">${result.content}</p>
                         </div>
                     `;
